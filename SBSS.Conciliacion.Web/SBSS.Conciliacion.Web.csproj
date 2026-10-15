@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>SBSS.Conciliacion.Web</RootNamespace>
     <UserSecretsId>sbss-conciliacion-web</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,6 +17,7 @@
     <!-- Generación de documentos legales .docx y reportes -->
     <PackageReference Include="DocumentFormat.OpenXml" Version="3.1.0" />
     <PackageReference Include="ClosedXML" Version="0.104.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.24.2-preview.1" />
     <PackageReference Include="QuestPDF" Version="2024.10.3" />
 
     <!-- Seguridad -->
