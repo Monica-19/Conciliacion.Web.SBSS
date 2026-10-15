@@ -1,0 +1,35 @@
+﻿@model SBSS.Conciliacion.Web.Models.Materia
+@{
+    
+    Layout = null; 
+}
+
+<div class="card border-danger" style="margin: 0; border: none;">
+    <div class="card-header bg-danger text-white" style="padding: 15px; border-radius: 4px 4px 0 0;">
+        <h4 class="mb-0" style="margin: 0; font-size: 1.2rem;">¿Está seguro de que desea eliminar esta materia?</h4>
+    </div>
+    <div class="card-body" style="padding: 12px;">
+        <dl class="row" style="margin-bottom: 20px;">
+            <dt class="col-sm-4" style="font-weight: bold; margin-bottom: 8px;">ID Materia:</dt>
+            <dd class="col-sm-8" style="margin-bottom: 8px;">@Model.IdMateria</dd>
+
+            <dt class="col-sm-4" style="font-weight: bold; margin-bottom: 8px;">Nombre:</dt>
+            <dd class="col-sm-8" style="margin-bottom: 8px;">@Model.NombreMateria</dd>
+
+            <dt class="col-sm-4" style="font-weight: bold; margin-bottom: 8px;">Descripción:</dt>
+            <dd class="col-sm-8" style="margin-bottom: 8px;">@Model.DescripcionMateria</dd>
+        </dl>
+
+        <form asp-action="Delete" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" value="@Model.IdMateria" />
+
+            <div style="display:flex; gap:12px; justify-content: flex-end;">
+                <button type="button" onclick="document.getElementById('miVentanaFlotante').close()" class="btn btn-secondary">Cancelar</button>
+                <button type="submit" class="btn btn-danger">
+                    <i class="fa fa-trash"></i> Confirmar Eliminación
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

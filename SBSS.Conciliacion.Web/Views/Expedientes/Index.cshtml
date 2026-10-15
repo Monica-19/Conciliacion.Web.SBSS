@@ -1,0 +1,102 @@
+@model IEnumerable<ExpedienteListItemVm>
+@{
+    ViewData["Title"] = "Expedientes";
+    var filtro = ViewBag.Filtro as ExpedienteFiltroVm ?? new ExpedienteFiltroVm();
+    var materiasAgrupadas = ViewBag.MateriasGrouped as Dictionary<string, List<dynamic>>;
+}
+
+<div class="wrap page-head" style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px;">
+    <div>
+        <h1>Expedientes</h1>
+        <p>Registro y seguimiento de casos de conciliación.</p>
+    </div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <a asp-action="ExportarExcel" asp-route-estado="@filtro.Estado" asp-route-idMateria="@filtro.IdMateria" class="btn btn-ghost">Exportar Excel</a>
+        <a asp-action="ExportarPdf" asp-route-estado="@filtro.Estado" asp-route-idMateria="@filtro.IdMateria" class="btn btn-ghost">Exportar PDF</a>
+        <a asp-action="Create" class="btn btn-primary">+ Registrar expediente</a>
+    </div>
+</div>
+
+<div class="wrap">
+    <form method="get" class="panel" style="display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap;">
+        <div>
+            <label style="font-family:'Poppins',sans-serif;font-size:0.82rem;font-weight:600;color:var(--navy);display:block;margin-bottom:6px;">Estado</label>
+            <select name="Estado" class="form-control" style="margin-bottom:0;min-width:160px;">
+                <option value="">Todos</option>
+                @foreach (var estado in new[] { "REGISTRADO", "ASIGNADO", "EN_PROCESO", "CONCLUIDO", "ARCHIVADO" })
+                {
+                    <option value="@estado" selected="@(filtro.Estado == estado)">@estado</option>
+                }
+            </select>
+        </div> 
+
+        <div>
+            <label style="font-family:'Poppins',sans-serif;font-size:0.82rem;font-weight:600;color:var(--navy);display:block;margin-bottom:6px;">Materia</label>
+            <select name="IdMateria" class="form-control" style="margin-bottom:0;min-width:260px;max-width:380px;">
+                <option value="">Todas las materias</option>
+                @if (materiasAgrupadas != null)
+                {
+                    foreach (var grupo in materiasAgrupadas)
+                    {
+                        <optgroup label="@grupo.Key">
+                            @foreach (var m in grupo.Value)
+                            {
+                                <option value="@m.Id" selected="@(filtro.IdMateria == m.Id)">@m.Detalle</option>
+                            }
+                        </optgroup>
+                    }
+                }
+            </select>
+        </div>
+
+        <div>
+            <label style="font-family:'Poppins',sans-serif;font-size:0.82rem;font-weight:600;color:var(--navy);display:block;margin-bottom:6px;">Desde</label>
+            <input type="date" name="FechaInicio" class="form-control" style="margin-bottom:0;" value="@filtro.FechaInicio?.ToString("yyyy-MM-dd")" />
+        </div>
+        <div>
+            <label style="font-family:'Poppins',sans-serif;font-size:0.82rem;font-weight:600;color:var(--navy);display:block;margin-bottom:6px;">Hasta</label>
+            <input type="date" name="FechaFin" class="form-control" style="margin-bottom:0;" value="@filtro.FechaFin?.ToString("yyyy-MM-dd")" />
+        </div>
+        <button type="submit" class="btn btn-primary">Filtrar</button>
+    </form>
+
+
+
+    <div class="panel" style="padding:0;overflow-x:auto;">
+        <table class="tabla-sbss">
+            <thead>
+                <tr>
+                    <th>N.° Expediente</th>
+                    <th>Estado</th>
+                    <th>Recepción</th>
+                    <th>Vencimiento</th>
+                    <th>Conciliador</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="6" style="text-align:center;color:#4a5a61;padding:28px;">No se encontraron expedientes con los filtros seleccionados.</td></tr>
+                }
+                @foreach (var e in Model)
+                {
+                    <tr>
+                        <td><strong>@e.NumeroExpediente</strong></td>
+                        <td>
+                            <span class="badge-estado badge-@e.EstadoProceso">@e.EstadoProceso</span>
+                            @if (e.EstaVencido)
+                            {
+                                <span class="badge-estado badge-vencido">VENCIDO</span>
+                            }
+                        </td>
+                        <td>@e.FechaRecepcion?.ToString("dd/MM/yyyy")</td>
+                        <td>@e.FechaVencimiento?.ToString("dd/MM/yyyy")</td>
+                        <td>@(e.Conciliador ?? "Sin asignar")</td>
+                        <td><a asp-action="Details" asp-route-id="@e.IdExpediente" class="btn btn-ghost" style="padding:6px 16px;">Ver</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

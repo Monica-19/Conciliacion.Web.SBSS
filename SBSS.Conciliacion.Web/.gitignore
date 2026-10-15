@@ -1,0 +1,9 @@
+bin/
+obj/
+.vs/
+*.user
+appsettings.Production.json
+
+# Archivos subidos por los usuarios (documentos, videos de audiencias, etc.)
+App_Data/uploads/*
+!App_Data/uploads/.gitkeep

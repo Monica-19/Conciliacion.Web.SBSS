@@ -1,0 +1,130 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+    var anio = ViewBag.Anio;
+}
+
+<div class="wrap page-head">
+    <h1>Dashboard de gestión</h1>
+    <p>Indicadores del año @anio</p>
+</div>
+
+<div class="wrap">
+    <div class="kpi-grid">
+        <div class="kpi-card">
+            <div class="valor">@Model.Resumen.TotalExpedientes</div>
+            <div class="etiqueta">Total de expedientes</div>
+        </div>
+        <div class="kpi-card">
+            <div class="valor">@Model.Resumen.Registrados</div>
+            <div class="etiqueta">Registrados</div>
+        </div>
+        <div class="kpi-card">
+            <div class="valor">@Model.Resumen.Asignados</div>
+            <div class="etiqueta">Asignados</div>
+        </div>
+        <div class="kpi-card">
+            <div class="valor">@Model.Resumen.Concluidos</div>
+            <div class="etiqueta">Concluidos</div>
+        </div>
+        <div class="kpi-card vencidos">
+            <div class="valor">@Model.Resumen.Vencidos</div>
+            <div class="etiqueta">Vencidos</div>
+        </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+        <div class="panel">
+            <h3 style="margin-bottom:16px;">Expedientes por estado</h3>
+            <canvas id="chartPorEstado" height="140"></canvas>
+        </div>
+        <div class="panel">
+            <h3 style="margin-bottom:16px;">Resultado de audiencias</h3>
+            <canvas id="chartTasaExito" height="140"></canvas>
+        </div>
+    </div>
+
+    <div class="panel" style="margin-top:24px;">
+        <h3 style="margin-bottom:16px;">Expedientes recibidos por mes</h3>
+        <canvas id="chartPorMes" height="90"></canvas>
+    </div>
+
+    <div class="panel" style="margin-top:24px;">
+        <h3 style="margin-bottom:16px;">Expedientes por conciliador</h3>
+        <table class="tabla-sbss">
+            <thead><tr><th>Conciliador</th><th>Asignados</th><th>Concluidos</th></tr></thead>
+            <tbody>
+                @foreach (var c in Model.PorConciliador)
+                {
+                    <tr>
+                        <td>@c.Conciliador</td>
+                        <td>@c.TotalAsignados</td>
+                        <td>@c.Concluidos</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/lib/chart.umd.js" asp-append-version="true"></script>
+    <script>
+        const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+
+        // Series ya resueltas en el servidor (Model.PorMes / Model.TasaExito), a partir de
+        // sp_Dashboard_ExpedientesPorMes y sp_Dashboard_TasaExitoConciliacion.
+        const cantidadesPorMes = new Array(12).fill(0);
+        @foreach (var m in Model.PorMes)
+        {
+            @:cantidadesPorMes[@(m.Mes - 1)] = @m.Cantidad;
+        }
+
+        const etiquetasResultado = [@Html.Raw(string.Join(",", Model.TasaExito.Select(t => $"'{t.Resultado}'")))];
+        const cantidadesResultado = [@string.Join(",", Model.TasaExito.Select(t => t.Cantidad))];
+
+        new Chart(document.getElementById('chartPorMes'), {
+            type: 'bar',
+            data: {
+                labels: meses,
+                datasets: [{ label: 'Expedientes recibidos', data: cantidadesPorMes, backgroundColor: '#0c3855' }]
+            },
+            options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+        });
+
+        // Barras por estado del expediente (a partir del mismo resumen de las tarjetas KPI).
+        new Chart(document.getElementById('chartPorEstado'), {
+            type: 'bar',
+            data: {
+                labels: ['Registrados', 'Asignados', 'En proceso', 'Concluidos', 'Archivados'],
+                datasets: [{
+                    label: 'Expedientes',
+                    data: [
+                        @Model.Resumen.Registrados,
+                        @Model.Resumen.Asignados,
+                        @Model.Resumen.EnProceso,
+                        @Model.Resumen.Concluidos,
+                        @Model.Resumen.Archivados
+                    ],
+                    backgroundColor: ['#5b6a70', '#0c3855', '#b3893a', '#1f6b3a', '#8a97a0']
+                }]
+            },
+            options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+        });
+
+        // Resultado de audiencias como barras (antes era una dona: las barras
+        // permiten comparar cantidades exactas entre resultados con más claridad).
+        new Chart(document.getElementById('chartTasaExito'), {
+            type: 'bar',
+            data: {
+                labels: etiquetasResultado,
+                datasets: [{
+                    label: 'Audiencias',
+                    data: cantidadesResultado,
+                    backgroundColor: ['#0c3855','#b3893a','#a4302f','#5b6a70','#1f6b3a']
+                }]
+            },
+            options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+        });
+    </script>
+}

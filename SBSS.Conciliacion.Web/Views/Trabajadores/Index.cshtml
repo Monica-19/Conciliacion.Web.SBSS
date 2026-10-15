@@ -1,0 +1,37 @@
+@model IEnumerable<Trabajador>
+@{
+    ViewData["Title"] = "Trabajadores";
+}
+
+<div class="wrap page-head" style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px;">
+    <div>
+        <h1>Trabajadores</h1>
+        <p>Personal del centro: conciliadores y administrativos.</p>
+    </div>
+    <a asp-action="Create" class="btn btn-primary">+ Registrar trabajador</a>
+</div>
+
+<div class="wrap">
+    <div class="panel" style="padding:0;overflow-x:auto;">
+        <table class="tabla-sbss">
+            <thead><tr><th>Nombre</th><th>DNI</th><th>Sede</th><th>Correo</th><th>Estado</th><th></th></tr></thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="6" style="text-align:center;color:#4a5a61;padding:28px;">Aún no hay trabajadores registrados.</td></tr>
+                }
+                @foreach (var t in Model)
+                {
+                    <tr>
+                        <td><strong>@t.NombreCompleto</strong></td>
+                        <td>@t.DniTrabajador</td>
+                        <td>@(t.NombreSede ?? "-")</td>
+                        <td>@t.EmailTrabajador</td>
+                        <td><span class="badge-estado badge-@(t.EstadoTrabajador == "ACTIVO" ? "CONCLUIDO" : "ARCHIVADO")">@t.EstadoTrabajador</span></td>
+                        <td><a asp-action="Details" asp-route-id="@t.IdTrabajador" class="btn btn-ghost" style="padding:6px 16px;">Ver</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

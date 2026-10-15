@@ -1,0 +1,49 @@
+@model EditarTrabajadorVm
+@{
+    ViewData["Title"] = "Editar trabajador";
+    var sedes = ViewBag.Sedes as List<Sede> ?? new();
+}
+
+<div class="wrap page-head"><h1>Editar trabajador</h1></div>
+
+<div class="wrap">
+    <div class="panel" style="max-width:680px;">
+        <form asp-action="Edit" method="post" class="form-sbss">
+            <input type="hidden" asp-for="IdTrabajador" />
+            <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
+
+            <label asp-for="IdSedeRef"></label>
+            <select asp-for="IdSedeRef" class="form-control">
+                @foreach (var s in sedes)
+                {
+                    <option value="@s.IdSede" selected="@(s.IdSede == Model.IdSedeRef)">@s.Nombre</option>
+                }
+            </select>
+
+            <label asp-for="NombreTrabajador"></label>
+            <input asp-for="NombreTrabajador" class="form-control" />
+            <span asp-validation-for="NombreTrabajador" class="text-danger"></span>
+
+            <label asp-for="ApePaterTrabajador"></label>
+            <input asp-for="ApePaterTrabajador" class="form-control" />
+            <span asp-validation-for="ApePaterTrabajador" class="text-danger"></span>
+
+            <label asp-for="ApeMaterTrabajador"></label>
+            <input asp-for="ApeMaterTrabajador" class="form-control" />
+            <span asp-validation-for="ApeMaterTrabajador" class="text-danger"></span>
+
+            <label asp-for="EmailTrabajador"></label>
+            <input asp-for="EmailTrabajador" class="form-control" />
+
+            <label asp-for="TelefonoTrabajador"></label>
+            <input asp-for="TelefonoTrabajador" class="form-control" />
+
+            <div style="display:flex;gap:12px;">
+                <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                <a asp-action="Details" asp-route-id="@Model.IdTrabajador" class="btn btn-ghost">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

@@ -1,0 +1,222 @@
+@model ExpedienteDetalleVm
+@{
+    ViewData["Title"] = $"Expediente {Model.Expediente.NumeroExpediente}";
+    var e = Model.Expediente;
+    var personas = ViewBag.Personas as List<PersonaListItem> ?? new();
+    var materias = ViewBag.Materias as List<Materia> ?? new();
+}
+
+<div class="wrap page-head" style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px;">
+    <div>
+        <span class="eyebrow">Expediente</span>
+        <h1 style="margin-top:8px;">@e.NumeroExpediente</h1>
+        <p>
+            <span class="badge-estado badge-@e.EstadoProceso">@e.EstadoProceso</span>
+            @if (e.EstaVencido)
+            {
+                <span class="badge-estado badge-vencido">VENCIDO</span>
+            }
+        </p>
+    </div>
+    <div style="display:flex;gap:12px;">
+        <a asp-controller="Audiencias" asp-action="Programar" asp-route-idExpediente="@e.IdExpediente" class="btn btn-primary">+ Programar audiencia</a>
+        <form asp-action="Delete" method="post" onsubmit="return confirm('¿Seguro que quieres eliminar el expediente @e.NumeroExpediente? Esta acción no se puede deshacer y borra también sus audiencias, documentos y archivos.');">
+            <input type="hidden" name="id" value="@e.IdExpediente" />
+            <button type="submit" class="btn btn-danger">Eliminar expediente</button>
+        </form>
+    </div>
+</div>
+
+<div class="wrap" style="display:grid;grid-template-columns:2fr 1fr;gap:28px;">
+    <div>
+        <div class="panel">
+            <h3 style="margin-bottom:16px;">Datos del expediente</h3>
+            <p><strong>Conciliador:</strong> @(e.NombreConciliador ?? "Sin asignar")</p>
+            <p><strong>Sede:</strong> @(e.NombreSede ?? "-")</p>
+            <p><strong>Fecha de recepción:</strong> @e.FechaRecepcion?.ToString("dd/MM/yyyy")</p>
+            <p><strong>Fecha de notificación:</strong> @(e.FechaNotificacion?.ToString("dd/MM/yyyy") ?? "Pendiente")</p>
+            <p><strong>Fecha de vencimiento:</strong> @e.FechaVencimiento?.ToString("dd/MM/yyyy")</p>
+            <p><strong>Fecha de cierre:</strong> @(e.FechaCierre?.ToString("dd/MM/yyyy") ?? "Aún abierto")</p>
+        </div>
+
+        <div class="panel">
+            <h3 style="margin-bottom:16px;">Materias</h3>
+            @if (!Model.Materias.Any())
+            {
+                <p style="color:#4a5a61;">Sin materias registradas.</p>
+            }
+            <ul style="list-style:none;padding:0;">
+                @foreach (var m in Model.Materias)
+                {
+                    <li style="padding:10px 0;border-top:1px solid rgba(12,56,85,0.08);">
+                        <strong>@m.NombreMateria</strong>
+                        @if (!string.IsNullOrEmpty(m.DescripcionDtMateria)) { <div style="color:#4a5a61;font-size:0.9rem;">@m.DescripcionDtMateria</div> }
+                    </li>
+                }
+            </ul>
+
+            <form asp-action="AgregarMateria" method="post" class="form-sbss" style="margin-top:16px;border-top:1px solid rgba(12,56,85,0.08);padding-top:16px;">
+                <input type="hidden" name="IdExpediente" value="@e.IdExpediente" />
+                <label>Vincular materia</label>
+                @if (!materias.Any())
+                {
+                    <p style="color:#a4302f;font-size:0.85rem;margin-bottom:10px;">
+                        No hay materias registradas todavía. Ve a
+                        <a asp-controller="Materias" asp-action="Create" style="text-decoration:underline;">Catálogos → Materias</a>
+                        para crear al menos una antes de poder vincularla aquí.
+                    </p>
+                }
+                <select name="IdMateria" class="form-control">
+                    <option value="">-- Selecciona --</option>
+                    @foreach (var m in materias)
+                    {
+                        <option value="@m.IdMateria">@m.NombreTipoMateria — @m.NombreMateria</option>
+                    }
+                </select>
+                <label>Detalle (opcional)</label>
+                <textarea name="DescripcionDtMateria" class="form-control" rows="2"></textarea>
+                <button type="submit" class="btn btn-ghost" style="width:100%;" @(materias.Any() ? "" : "disabled")>Vincular materia</button>
+            </form>
+        </div>
+
+        <div class="panel">
+            <h3 style="margin-bottom:16px;">Audiencias</h3>
+            @if (!Model.Audiencias.Any())
+            {
+                <p style="color:#4a5a61;">Aún no se han programado audiencias.</p>
+            }
+            <table class="tabla-sbss">
+                <thead><tr><th>N.°</th><th>Fecha</th><th>Hora</th><th>Estado</th><th>Resultado</th><th></th></tr></thead>
+                <tbody>
+                    @foreach (var a in Model.Audiencias)
+                    {
+                        <tr>
+                            <td>@a.NumeroSesion</td>
+                            <td>@a.Fecha?.ToString("dd/MM/yyyy")</td>
+                            <td>@a.Hora</td>
+                            <td>@a.Estado</td>
+                            <td>@(a.Resultado ?? "-")</td>
+                            <td>
+                                @if (string.IsNullOrEmpty(a.Resultado))
+                                {
+                                    <a asp-controller="Audiencias" asp-action="RegistrarResultado"
+                                       asp-route-idDocumento="@a.IdDocumento" asp-route-idExpediente="@e.IdExpediente"
+                                       class="btn btn-ghost" style="padding:5px 14px;">Registrar resultado</a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="panel">
+            <h3 style="margin-bottom:16px;">Archivos y videos</h3>
+            @if (!Model.Archivos.Any())
+            {
+                <p style="color:#4a5a61;">Aún no se han subido archivos a este expediente.</p>
+            }
+            <ul style="list-style:none;padding:0;">
+                @foreach (var a in Model.Archivos)
+                {
+                    <li style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-top:1px solid rgba(12,56,85,0.08);">
+                        <div>
+                            <span class="badge-estado badge-ASIGNADO" style="margin-right:8px;">@a.TipoArchivo</span>
+                            <strong>@a.NombreArchivo</strong>
+                            <div style="color:#4a5a61;font-size:0.8rem;margin-top:2px;">
+                                @(a.TamanioKB.HasValue ? $"{(a.TamanioKB ?? 0) / 1024.0:0.0} MB" : "") · @a.FechaSubida.ToString("dd/MM/yyyy HH:mm")
+                            </div>
+                        </div>
+                        <a asp-action="DescargarArchivo" asp-route-id="@a.IdArchivo" class="btn btn-ghost" style="padding:6px 14px;">Descargar</a>
+                    </li>
+                }
+            </ul>
+
+            <form asp-action="SubirArchivo" method="post" enctype="multipart/form-data" class="form-sbss" style="margin-top:16px;border-top:1px solid rgba(12,56,85,0.08);padding-top:16px;">
+                <input type="hidden" name="IdExpediente" value="@e.IdExpediente" />
+                <label>Tipo</label>
+                <select name="TipoArchivo" class="form-control">
+                    <option value="DOCUMENTO">Documento (.pdf, .doc, .docx — máx. 15 MB)</option>
+                    <option value="IMAGEN">Imagen (.jpg, .png, .webp — máx. 15 MB)</option>
+                    <option value="VIDEO">Video (.mp4, .mov, .avi, .webm — máx. 200 MB)</option>
+                    <option value="AUDIO">Audio (.mp3, .wav, .m4a — máx. 50 MB)</option>
+                </select>
+                <label>Archivo</label>
+                <input type="file" name="Archivo" class="form-control" required />
+                <button type="submit" class="btn btn-primary" style="width:100%;">Subir archivo</button>
+            </form>
+        </div>
+    </div>
+
+    <div>
+        <div class="panel">
+            <h3 style="margin-bottom:16px;">Conciliador</h3>
+            @if (!string.IsNullOrEmpty(e.NombreConciliador))
+            {
+                <p style="color:#3c4d55;margin-bottom:14px;">Asignado actualmente: <strong>@e.NombreConciliador</strong></p>
+            }
+            else
+            {
+                <p style="color:#4a5a61;margin-bottom:14px;">Aún no tiene conciliador asignado.</p>
+            }
+            <form asp-action="AsignarConciliador" method="post" onsubmit="return confirm('El sistema asignará un conciliador al azar entre los trabajadores activos. ¿Continuar?');">
+                <input type="hidden" name="idExpediente" value="@e.IdExpediente" />
+                <button type="submit" class="btn btn-primary" style="width:100%;">
+                    @(string.IsNullOrEmpty(e.NombreConciliador) ? "Asignar conciliador (aleatorio)" : "Reasignar conciliador (aleatorio)")
+                </button>
+            </form>
+        </div>
+
+        <div class="panel">
+            <h3 style="margin-bottom:16px;">Cambiar estado</h3>
+            <form asp-action="CambiarEstado" method="post" class="form-sbss">
+                <input type="hidden" name="IdExpediente" value="@e.IdExpediente" />
+                <label>Nuevo estado</label>
+                <select name="NuevoEstado" class="form-control">
+                    @foreach (var estado in new[] { "REGISTRADO", "ASIGNADO", "EN_PROCESO", "CONCLUIDO", "ARCHIVADO" })
+                    {
+                        <option value="@estado" selected="@(e.EstadoProceso == estado)">@estado</option>
+                    }
+                </select>
+                <button type="submit" class="btn btn-ghost" style="width:100%;">Actualizar estado</button>
+            </form>
+        </div>
+
+        <div class="panel">
+            <h3 style="margin-bottom:16px;">Personas involucradas</h3>
+            @if (!Model.Personas.Any())
+            {
+                <p style="color:#4a5a61;">Sin personas registradas.</p>
+            }
+            @foreach (var p in Model.Personas)
+            {
+                <div style="padding:10px 0;border-top:1px solid rgba(12,56,85,0.08);font-size:0.9rem;">
+                    <strong>@p.RolParticipante</strong><br>
+                    @p.CorreoP <br>
+                    @p.CelularP
+                </div>
+            }
+
+            <form asp-action="AgregarPersona" method="post" class="form-sbss" style="margin-top:16px;border-top:1px solid rgba(12,56,85,0.08);padding-top:16px;">
+                <input type="hidden" name="IdExpediente" value="@e.IdExpediente" />
+                <label>Vincular persona</label>
+                <select name="IdPersona" class="form-control">
+                    <option value="">-- Selecciona --</option>
+                    @foreach (var p in personas)
+                    {
+                        <option value="@p.IdPersona">@p.NombreCompleto (@p.Documento)</option>
+                    }
+                </select>
+                <label>Rol en el expediente</label>
+                <select name="RolParticipante" class="form-control">
+                    <option value="SOLICITANTE">Solicitante</option>
+                    <option value="INVITADO">Invitado</option>
+                    <option value="APODERADO">Apoderado</option>
+                    <option value="TESTIGO">Testigo</option>
+                </select>
+                <button type="submit" class="btn btn-ghost" style="width:100%;">Vincular persona</button>
+            </form>
+            <a asp-controller="Personas" asp-action="CreateNatural" style="display:block;text-align:center;margin-top:10px;font-size:0.85rem;color:var(--navy);text-decoration:underline;">¿La persona no existe? Regístrala aquí</a>
+        </div>
+    </div>
+</div>

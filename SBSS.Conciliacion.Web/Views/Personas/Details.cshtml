@@ -1,0 +1,60 @@
+@model PersonaDetalle
+@{
+    ViewData["Title"] = Model.NombreCompleto;
+    var direccion = ViewBag.Direccion as DireccionDetalleVm;
+}
+
+<div class="wrap page-head" style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px;">
+    <div>
+        <span class="eyebrow">@(Model.TipoPersona == "NATURAL" ? "Persona natural" : "Persona jurídica")</span>
+        <h1 style="margin-top:8px;">@Model.NombreCompleto</h1>
+        <p><span class="badge-estado badge-@(Model.EstadoPersona == "ACTIVO" ? "CONCLUIDO" : "ARCHIVADO")">@Model.EstadoPersona</span></p>
+    </div>
+</div>
+
+<div class="wrap" style="display:grid;grid-template-columns:2fr 1fr;gap:28px;">
+    <div>
+        <div class="panel">
+            <h3 style="margin-bottom:16px;">Datos</h3>
+            @if (Model.TipoPersona == "NATURAL")
+            {
+                <p><strong>DNI:</strong> @Model.DniPersonaN</p>
+            }
+            else
+            {
+                <p><strong>RUC:</strong> @Model.Ruc</p>
+            }
+            <p><strong>Correo:</strong> @(Model.CorreoP ?? "-")</p>
+            <p><strong>Celular:</strong> @(Model.CelularP ?? "-")</p>
+        </div>
+
+        <div class="panel">
+            <h3 style="margin-bottom:16px;">Dirección</h3>
+            @if (direccion is null)
+            {
+                <p style="color:#4a5a61;">No se registró una dirección para esta persona.</p>
+            }
+            else
+            {
+                <p>
+                    @direccion.TipoVia @direccion.NombreVia @direccion.Numero
+                    @if (!string.IsNullOrEmpty(direccion.Urbanizacion)) { <text> — Urb. @direccion.Urbanizacion</text> }
+                </p>
+                <p>@direccion.Distrito, @direccion.Provincia, @direccion.Departamento</p>
+                @if (!string.IsNullOrEmpty(direccion.Referencia))
+                {
+                    <p style="color:#4a5a61;font-size:0.9rem;">Referencia: @direccion.Referencia</p>
+                }
+            }
+        </div>
+    </div>
+
+    <div class="panel">
+        <h3 style="margin-bottom:16px;">Estado</h3>
+        <form asp-action="CambiarEstado" method="post">
+            <input type="hidden" name="IdPersona" value="@Model.IdPersona" />
+            <input type="hidden" name="EstadoPersona" value="@(Model.EstadoPersona == "ACTIVO" ? "INACTIVO" : "ACTIVO")" />
+            <button type="submit" class="btn btn-ghost" style="width:100%;">@(Model.EstadoPersona == "ACTIVO" ? "Desactivar" : "Activar")</button>
+        </form>
+    </div>
+</div>

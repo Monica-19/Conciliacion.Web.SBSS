@@ -1,0 +1,42 @@
+@model AudienciaDetalleVm
+@{
+    ViewData["Title"] = $"Audiencia — {Model.NumeroExpediente}";
+}
+
+<div class="wrap page-head" style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px;">
+    <div>
+        <span class="eyebrow">Audiencia N.° @Model.NumeroSesion</span>
+        <h1 style="margin-top:8px;">Expediente @Model.NumeroExpediente</h1>
+        <p>
+            <span class="badge-estado badge-ASIGNADO">@Model.Estado</span>
+            @if (!string.IsNullOrEmpty(Model.Resultado))
+            {
+                <span class="badge-estado badge-CONCLUIDO">@Model.Resultado</span>
+            }
+        </p>
+    </div>
+    <a asp-controller="Expedientes" asp-action="Details" asp-route-id="@Model.IdExpediente" class="btn btn-ghost">Volver al expediente</a>
+</div>
+
+<div class="wrap">
+    <div class="panel">
+        <h3 style="margin-bottom:16px;">Datos de la audiencia</h3>
+        <p><strong>Tipo de documento:</strong> @Model.TipoDocumento</p>
+        <p><strong>Fecha:</strong> @Model.Fecha?.ToString("dd/MM/yyyy")</p>
+        <p><strong>Hora:</strong> @Model.Hora</p>
+        <p><strong>Conciliador:</strong> @(Model.Conciliador ?? "Sin asignar")</p>
+        <p><strong>Estado:</strong> @Model.Estado</p>
+        <p><strong>Resultado:</strong> @(Model.Resultado ?? "Aún no registrado")</p>
+
+        <h4 style="margin:20px 0 8px;color:var(--navy);">Observaciones</h4>
+        <p style="color:#3c4d55;white-space:pre-line;">@(string.IsNullOrWhiteSpace(Model.Observaciones) ? "Sin observaciones registradas." : Model.Observaciones)</p>
+
+        <div style="display:flex;gap:12px;margin-top:24px;flex-wrap:wrap;">
+            @if (string.IsNullOrEmpty(Model.Resultado))
+            {
+                <a asp-action="RegistrarResultado" asp-route-idDocumento="@Model.IdDocumento" asp-route-idExpediente="@Model.IdExpediente" class="btn btn-primary">Registrar resultado</a>
+                <a asp-action="Reprogramar" asp-route-idDocumento="@Model.IdDocumento" asp-route-idExpediente="@Model.IdExpediente" class="btn btn-ghost">Reprogramar</a>
+            }
+        </div>
+    </div>
+</div>

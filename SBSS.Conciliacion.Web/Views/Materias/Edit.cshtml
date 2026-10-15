@@ -1,0 +1,37 @@
+@model EditarMateriaVm
+@{
+    Layout = null; 
+    var tipos = ViewBag.Tipos as List<TipoMateria> ?? new();
+}
+
+<div class="panel" style="max-width:100%; border: none; padding: 10px 0 0 0;">
+    <h2 style="margin-top: 0; margin-bottom: 20px; font-size: 1.5rem;">Editar materia</h2>
+    
+    <form asp-action="Edit" method="post" class="form-sbss">
+        <input type="hidden" asp-for="IdMateria" />
+        <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
+
+        <label asp-for="IdTipoMateria"></label>
+        <select asp-for="IdTipoMateria" class="form-control" style="margin-bottom: 15px;">
+            @foreach (var t in tipos)
+            {
+                <option value="@t.IdTipoMateria" selected="@(t.IdTipoMateria == Model.IdTipoMateria)">@t.NombreTipoMateria</option>
+            }
+        </select>
+
+        <label asp-for="NombreMateria"></label>
+        <input asp-for="NombreMateria" class="form-control" style="margin-bottom: 15px;" />
+        <span asp-validation-for="NombreMateria" class="text-danger"></span>
+
+        <label asp-for="DescripcionMateria"></label>
+        <textarea asp-for="DescripcionMateria" class="form-control" rows="3" style="margin-bottom: 20px;"></textarea>
+
+        <div style="display:flex; gap:12px; justify-content: flex-end;">
+            <button type="button" onclick="document.getElementById('miVentanaFlotante').close()" class="btn btn-ghost">Cancelar</button>
+            <button type="submit" class="btn btn-primary">Guardar cambios</button>
+        </div>
+    </form>
+</div>
+
+<script src="/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>

@@ -1,0 +1,44 @@
+@model Trabajador
+@{
+    ViewData["Title"] = Model.NombreCompleto;
+    var tieneAcceso = ViewBag.TieneAcceso as bool? ?? false;
+}
+
+<div class="wrap page-head" style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px;">
+    <div>
+        <span class="eyebrow">Trabajador</span>
+        <h1 style="margin-top:8px;">@Model.NombreCompleto</h1>
+        <p><span class="badge-estado badge-@(Model.EstadoTrabajador == "ACTIVO" ? "CONCLUIDO" : "ARCHIVADO")">@Model.EstadoTrabajador</span></p>
+    </div>
+    <a asp-action="Edit" asp-route-id="@Model.IdTrabajador" class="btn btn-ghost">Editar</a>
+</div>
+
+<div class="wrap" style="display:grid;grid-template-columns:2fr 1fr;gap:28px;">
+    <div class="panel">
+        <h3 style="margin-bottom:16px;">Datos</h3>
+        <p><strong>DNI:</strong> @Model.DniTrabajador</p>
+        <p><strong>Sede:</strong> @(Model.NombreSede ?? "-")</p>
+        <p><strong>Correo:</strong> @(Model.EmailTrabajador ?? "-")</p>
+        <p><strong>Teléfono:</strong> @(Model.TelefonoTrabajador ?? "-")</p>
+        <p><strong>Registro de conciliador:</strong> @(Model.RegistroCivilComercial ?? "-")</p>
+    </div>
+
+    <div class="panel">
+        <h3 style="margin-bottom:16px;">Acceso al sistema</h3>
+        @if (tieneAcceso)
+        {
+            <p style="color:#1f6b3a;">Este trabajador ya tiene credenciales de acceso.</p>
+        }
+        else
+        {
+            <p style="color:#4a5a61;margin-bottom:16px;">Este trabajador aún no puede iniciar sesión en el sistema.</p>
+            <a asp-action="CrearAcceso" asp-route-id="@Model.IdTrabajador" class="btn btn-primary" style="width:100%;">Crear acceso</a>
+        }
+
+        <form asp-action="CambiarEstado" method="post" style="margin-top:20px;">
+            <input type="hidden" name="IdTrabajador" value="@Model.IdTrabajador" />
+            <input type="hidden" name="EstadoTrabajador" value="@(Model.EstadoTrabajador == "ACTIVO" ? "INACTIVO" : "ACTIVO")" />
+            <button type="submit" class="btn btn-ghost" style="width:100%;">@(Model.EstadoTrabajador == "ACTIVO" ? "Desactivar" : "Activar")</button>
+        </form>
+    </div>
+</div>

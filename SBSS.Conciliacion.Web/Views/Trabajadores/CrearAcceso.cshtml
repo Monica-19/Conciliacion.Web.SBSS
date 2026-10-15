@@ -1,0 +1,41 @@
+@model CrearAccesoVm
+@{
+    ViewData["Title"] = "Crear acceso";
+}
+
+<div class="wrap page-head">
+    <h1>Crear acceso al sistema</h1>
+    <p>Para <strong>@Model.NombreTrabajador</strong></p>
+</div>
+
+<div class="wrap">
+    <div class="panel" style="max-width:520px;">
+        <form asp-action="CrearAcceso" method="post" class="form-sbss">
+            <input type="hidden" asp-for="IdTrabajador" />
+            <input type="hidden" asp-for="NombreTrabajador" />
+            <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
+
+            <label asp-for="Usuario"></label>
+            <input asp-for="Usuario" class="form-control" />
+            <span asp-validation-for="Usuario" class="text-danger"></span>
+
+            <label asp-for="Contrasenia"></label>
+            <input asp-for="Contrasenia" class="form-control" />
+            <span asp-validation-for="Contrasenia" class="text-danger"></span>
+
+            <label asp-for="Rol"></label>
+            <select asp-for="Rol" class="form-control">
+                <option value="ADMINISTRADOR">Administrador</option>
+                <option value="CONCILIADOR">Conciliador</option>
+                <option value="MESA_DE_PARTES">Mesa de partes</option>
+            </select>
+
+            <div style="display:flex;gap:12px;">
+                <button type="submit" class="btn btn-primary">Crear acceso</button>
+                <a asp-action="Details" asp-route-id="@Model.IdTrabajador" class="btn btn-ghost">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

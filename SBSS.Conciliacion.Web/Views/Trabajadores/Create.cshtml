@@ -1,0 +1,69 @@
+@model CrearTrabajadorVm
+@{
+    ViewData["Title"] = "Registrar trabajador";
+    var sedes = ViewBag.Sedes as List<Sede> ?? new();
+}
+
+<div class="wrap page-head"><h1>Registrar trabajador</h1></div>
+
+<div class="wrap">
+    <div class="panel" style="max-width:680px;">
+        <form asp-action="Create" method="post" class="form-sbss">
+            <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
+
+            <label asp-for="IdSedeRef"></label>
+            <select asp-for="IdSedeRef" class="form-control">
+                <option value="">-- Selecciona --</option>
+                @foreach (var s in sedes)
+                {
+                    <option value="@s.IdSede">@s.Nombre</option>
+                }
+            </select>
+            <span asp-validation-for="IdSedeRef" class="text-danger"></span>
+
+            <label asp-for="DniTrabajador"></label>
+            <div style="display:flex;gap:10px;align-items:flex-start;">
+                <input asp-for="DniTrabajador" class="form-control" maxlength="8" style="flex:1;" />
+                <button type="button" class="btn btn-ghost" style="white-space:nowrap;margin-top:0;"
+                        data-consulta="dni" data-input="DniTrabajador" data-mensaje="msgDni"
+                        data-destino='{"nombres":"NombreTrabajador","apellidoPaterno":"ApePaterTrabajador","apellidoMaterno":"ApeMaterTrabajador"}'>
+                    Buscar en RENIEC
+                </button>
+            </div>
+            <span asp-validation-for="DniTrabajador" class="text-danger"></span>
+            <p id="msgDni" style="font-size:0.82rem;margin:-10px 0 14px;"></p>
+
+            <label asp-for="NombreTrabajador"></label>
+            <input asp-for="NombreTrabajador" class="form-control" />
+            <span asp-validation-for="NombreTrabajador" class="text-danger"></span>
+
+            <label asp-for="ApePaterTrabajador"></label>
+            <input asp-for="ApePaterTrabajador" class="form-control" />
+            <span asp-validation-for="ApePaterTrabajador" class="text-danger"></span>
+
+            <label asp-for="ApeMaterTrabajador"></label>
+            <input asp-for="ApeMaterTrabajador" class="form-control" />
+            <span asp-validation-for="ApeMaterTrabajador" class="text-danger"></span>
+
+            <label asp-for="EmailTrabajador"></label>
+            <input asp-for="EmailTrabajador" class="form-control" />
+            <span asp-validation-for="EmailTrabajador" class="text-danger"></span>
+
+            <label asp-for="TelefonoTrabajador"></label>
+            <input asp-for="TelefonoTrabajador" class="form-control" />
+
+            <label asp-for="RegistroCivilComercial"></label>
+            <input asp-for="RegistroCivilComercial" class="form-control" />
+
+            <div style="display:flex;gap:12px;">
+                <button type="submit" class="btn btn-primary">Registrar</button>
+                <a asp-action="Index" class="btn btn-ghost">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/consultas.js" asp-append-version="true"></script>
+}

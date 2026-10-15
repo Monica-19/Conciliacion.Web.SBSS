@@ -1,0 +1,28 @@
+@model CrearTipoMateriaVm
+@{
+    ViewData["Title"] = "Nuevo tipo de materia";
+}
+
+<div class="wrap page-head"><h1>Nuevo tipo de materia</h1></div>
+
+<div class="wrap">
+    <div class="panel" style="max-width:600px;">
+        <form asp-action="CreateTipo" method="post" class="form-sbss">
+            <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
+
+            <label asp-for="NombreTipoMateria"></label>
+            <input asp-for="NombreTipoMateria" class="form-control" placeholder="Ej. Civil y Comercial" />
+            <span asp-validation-for="NombreTipoMateria" class="text-danger"></span>
+
+            <label asp-for="DescripcionTipoMateria"></label>
+            <textarea asp-for="DescripcionTipoMateria" class="form-control" rows="3"></textarea>
+
+            <div style="display:flex;gap:12px;">
+                <button type="submit" class="btn btn-primary">Registrar tipo</button>
+                <a asp-action="Index" class="btn btn-ghost">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

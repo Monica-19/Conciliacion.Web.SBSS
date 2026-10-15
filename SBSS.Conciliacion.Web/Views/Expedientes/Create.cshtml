@@ -1,0 +1,60 @@
+@model CrearExpedienteVm
+@{
+    ViewData["Title"] = "Registrar expediente";
+    var sedes = ViewBag.Sedes as List<Sede> ?? new();
+    var trabajadores = ViewBag.Trabajadores as List<Trabajador> ?? new();
+}
+
+<div class="wrap page-head">
+    <h1>Registrar nuevo expediente</h1>
+    <p>Se calculará automáticamente la fecha de vencimiento según el plazo indicado (Ley N.° 26872).</p>
+</div>
+
+<div class="wrap">
+    <div class="panel" style="max-width:640px;">
+        <form asp-action="Create" method="post" class="form-sbss">
+            <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
+
+            <label asp-for="NumeroExpediente"></label>
+            <input asp-for="NumeroExpediente" class="form-control" placeholder="Ej. EXP-2026-000123" />
+            <span asp-validation-for="NumeroExpediente" class="text-danger"></span>
+
+            <label asp-for="IdTrabajador"></label>
+            <select asp-for="IdTrabajador" class="form-control">
+                <option value="">-- Selecciona --</option>
+                @foreach (var t in trabajadores)
+                {
+                    <option value="@t.IdTrabajador">@t.NombreCompleto</option>
+                }
+            </select>
+            <span asp-validation-for="IdTrabajador" class="text-danger"></span>
+
+            <label asp-for="IdSede"></label>
+            <select asp-for="IdSede" class="form-control">
+                <option value="">-- Selecciona --</option>
+                @foreach (var s in sedes)
+                {
+                    <option value="@s.IdSede">@s.Nombre</option>
+                }
+            </select>
+            <span asp-validation-for="IdSede" class="text-danger"></span>
+
+            <label asp-for="FechaRecepcion"></label>
+            <input asp-for="FechaRecepcion" type="date" class="form-control" />
+            <span asp-validation-for="FechaRecepcion" class="text-danger"></span>
+
+            <label asp-for="PlazoDias"></label>
+            <input asp-for="PlazoDias" type="number" class="form-control" />
+            <span asp-validation-for="PlazoDias" class="text-danger"></span>
+
+            <div style="display:flex;gap:12px;margin-top:10px;">
+                <button type="submit" class="btn btn-primary">Registrar expediente</button>
+                <a asp-action="Index" class="btn btn-ghost">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

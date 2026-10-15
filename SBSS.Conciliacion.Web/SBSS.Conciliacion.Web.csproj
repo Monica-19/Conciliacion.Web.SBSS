@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>SBSS.Conciliacion.Web</RootNamespace>
+    <UserSecretsId>sbss-conciliacion-web</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Acceso a datos: Dapper + SQL Server, para invocar directamente los SP de BD-SBSS-SP.sql -->
+    <PackageReference Include="Dapper" Version="2.1.35" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
+
+    <!-- Generación de documentos legales .docx y reportes -->
+    <PackageReference Include="DocumentFormat.OpenXml" Version="3.1.0" />
+    <PackageReference Include="ClosedXML" Version="0.104.1" />
+    <PackageReference Include="QuestPDF" Version="2024.10.3" />
+
+    <!-- Seguridad -->
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+  </ItemGroup>
+
+</Project>

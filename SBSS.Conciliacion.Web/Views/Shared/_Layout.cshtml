@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Gestión de Conciliación SBSS</title>
+    <link rel="icon" type="image/png" href="~/images/emblem.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+
+<header class="app-header">
+    <div class="wrap nav">
+        @if (User.Identity is { IsAuthenticated: true })
+        {
+            <a asp-controller="Dashboard" asp-action="Index" class="brand">
+                <img src="~/images/logo-navy.png" alt="Centro de Conciliación Extrajudicial SBSS">
+            </a>
+                <nav class="nav-links">
+                    <a asp-controller="Dashboard"
+                       asp-action="Index">
+                        Dashboard
+                    </a>
+
+                    <a asp-controller="Expedientes"
+                       asp-action="Index">
+                        Expedientes
+                    </a>
+
+                    <a asp-controller="Reportes"
+                       asp-action="Index">
+                        Reportes
+                    </a>
+
+                    <a asp-controller="Catalogos"
+                       asp-action="Index">
+                        Catálogos
+                    </a>
+                </nav>
+
+                <div class="nav-cta">
+
+                    <!-- La campana ahora es el enlace a Notificaciones -->
+                    <a asp-controller="Notificaciones"
+                       asp-action="Index"
+                       id="btnNotificaciones"
+                       class="bell"
+                       title="Ver notificaciones"
+                       aria-label="Ver notificaciones">
+
+                        <span aria-hidden="true">🔔</span>
+
+                        <span id="badgeNotificaciones"
+                              class="badge-count"
+                              hidden>
+                            0
+                        </span>
+                    </a>
+
+                    <span class="user-chip">
+                        @User.Identity!.Name
+                    </span>
+
+                    <a asp-controller="Account"
+                       asp-action="Logout"
+                       class="btn btn-ghost">
+                        Cerrar sesión
+                    </a>
+            </div>
+        }
+        else
+        {
+            <span class="brand">
+                <img src="~/images/logo-navy.png" alt="Centro de Conciliación Extrajudicial SBSS">
+            </span>
+        }
+    </div>
+</header>
+
+@if (TempData["Ok"] != null)
+{
+    <div class="wrap"><div class="alerta alerta-ok">@TempData["Ok"]</div></div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="wrap"><div class="alerta alerta-error">@TempData["Error"]</div></div>
+}
+
+<main>
+    @RenderBody()
+</main>
+
+<footer class="app-footer">
+    <div class="wrap footer-top">
+        <div>
+            <img src="~/images/logo-white.png" alt="Centro de Conciliación Extrajudicial SBSS" style="height:44px;margin-bottom:18px;">
+            <p>Sistema de uso interno del Centro de Conciliación Extrajudicial SBSS, conforme a la Ley N.° 26872 y su Reglamento, D.S. N.° 004-2005-JUS.</p>
+        </div>
+        <div class="footer-col">
+            <h5>Contacto</h5>
+            <ul>
+                <li>+51 943 793 075</li>
+                <li>centrodeconciliacion@gruposbss.com</li>
+                <li>Calle La Corte Mz. J Lt. 33-A – Of. 201<br>Urb. Natasha, Trujillo</li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h5>Sistema</h5>
+            <ul>
+                <li>Gestión de Conciliación SBSS</li>
+                <li>ASP.NET Core 10.0 MVC</li>
+            </ul>
+        </div>
+    </div>
+    <div class="wrap footer-bottom">
+        <span>© @DateTime.Now.Year Centro de Conciliación Extrajudicial SBSS</span>
+    </div>
+</footer>
+
+<script src="~/lib/signalr.min.js" asp-append-version="true"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+@await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>

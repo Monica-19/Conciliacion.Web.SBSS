@@ -1,0 +1,31 @@
+@model OlvideContraseniaVm
+@{
+    ViewData["Title"] = "Olvidé mi contraseña";
+    Layout = "_Layout";
+}
+
+<section style="min-height:70vh;display:flex;align-items:center;justify-content:center;background:var(--mist);padding:60px 0;">
+    <div class="panel" style="max-width:420px;width:100%;">
+        <div style="text-align:center;margin-bottom:24px;">
+            <img src="~/images/logo-navy.png" alt="Centro de Conciliación Extrajudicial SBSS" style="height:44px;margin:0 auto 18px;">
+            <h1 style="font-size:1.4rem;">Recuperar contraseña</h1>
+            <p style="color:#4a5a61;font-size:0.9rem;margin-top:6px;">Ingresa tu usuario y te generaremos un enlace de restablecimiento.</p>
+        </div>
+
+        <form asp-action="OlvideContrasenia" method="post" class="form-sbss">
+            <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
+
+            <label asp-for="Usuario"></label>
+            <input asp-for="Usuario" class="form-control" autofocus />
+            <span asp-validation-for="Usuario" class="text-danger"></span>
+
+            <button type="submit" class="btn btn-primary" style="width:100%;margin-top:6px;">Generar enlace</button>
+        </form>
+
+        <p style="text-align:center;margin-top:20px;font-size:0.85rem;">
+            <a asp-action="Login" style="color:var(--navy);text-decoration:underline;">Volver a iniciar sesión</a>
+        </p>
+    </div>
+</section>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

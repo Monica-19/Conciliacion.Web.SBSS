@@ -1,0 +1,42 @@
+@model IEnumerable<Sede>
+@{
+    ViewData["Title"] = "Sedes";
+}
+
+<div class="wrap page-head" style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px;">
+    <div>
+        <h1>Sedes</h1>
+        <p>Locales del Centro de Conciliación Extrajudicial SBSS.</p>
+    </div>
+    <a asp-action="Create" class="btn btn-primary">+ Registrar sede</a>
+</div>
+
+<div class="wrap">
+    <div class="panel" style="padding:0;overflow-x:auto;">
+        <table class="tabla-sbss">
+            <thead><tr><th>Nombre</th><th>Descripción</th><th>Estado</th><th></th></tr></thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="4" style="text-align:center;color:#4a5a61;padding:28px;">Aún no hay sedes registradas.</td></tr>
+                }
+                @foreach (var s in Model)
+                { 
+                    <tr>
+                        <td><strong>@s.Nombre</strong></td>
+                        <td>@s.Descripcion</td>
+                        <td><span class="badge-estado badge-@(s.EstadoSede == "ACTIVA" ? "CONCLUIDO" : "ARCHIVADO")">@s.EstadoSede</span></td>
+                        <td style="display:flex;gap:8px;">
+                            <a asp-action="Edit" asp-route-id="@s.IdSede" class="btn btn-ghost" style="padding:6px 14px;">Editar</a>
+                            <form asp-action="CambiarEstado" method="post">
+                                <input type="hidden" name="IdSede" value="@s.IdSede" />
+                                <input type="hidden" name="EstadoSede" value="@(s.EstadoSede == "ACTIVA" ? "INACTIVA" : "ACTIVA")" />
+                                <button type="submit" class="btn btn-ghost" style="padding:6px 14px;">@(s.EstadoSede == "ACTIVA" ? "Desactivar" : "Activar")</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

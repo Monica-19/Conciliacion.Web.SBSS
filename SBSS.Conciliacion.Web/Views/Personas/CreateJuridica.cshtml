@@ -1,0 +1,86 @@
+@model CrearPersonaJuridicaVm
+@{
+    ViewData["Title"] = "Registrar persona jurídica";
+}
+
+<div class="wrap page-head"><h1>Registrar persona jurídica</h1></div>
+
+<div class="wrap">
+    <div class="panel" style="max-width:680px;">
+        <form asp-action="CreateJuridica" method="post" class="form-sbss">
+            <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
+
+            <label asp-for="Ruc"></label>
+            <div style="display:flex;gap:10px;align-items:flex-start;">
+                <input asp-for="Ruc" class="form-control" maxlength="11" style="flex:1;" />
+                <button type="button" class="btn btn-ghost" style="white-space:nowrap;margin-top:0;"
+                        data-consulta="ruc" data-input="Ruc" data-mensaje="msgRuc"
+                        data-destino='{"razonSocial":"RazonSocial","viaTipo":"Direccion_TipoVia","viaNombre":"Direccion_NombreVia","numero":"Direccion_Numero"}'>
+                    Buscar en SUNAT
+                </button>
+            </div>
+            <span asp-validation-for="Ruc" class="text-danger"></span>
+            <p id="msgRuc" style="font-size:0.82rem;margin:-10px 0 14px;"></p>
+
+            <label asp-for="RazonSocial"></label>
+            <input asp-for="RazonSocial" class="form-control" />
+            <span asp-validation-for="RazonSocial" class="text-danger"></span>
+
+            <label asp-for="CelularP"></label>
+            <input asp-for="CelularP" class="form-control" />
+
+            <label asp-for="CorreoP"></label>
+            <input asp-for="CorreoP" class="form-control" />
+            <span asp-validation-for="CorreoP" class="text-danger"></span>
+
+            <h3 style="margin:24px 0 12px;">Dirección <span style="font-weight:400;font-size:0.8rem;color:#4a5a61;">(opcional — se prellena al buscar en SUNAT)</span></h3>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+                <div>
+                    <label asp-for="Direccion.IdDepartamento"></label>
+                    <select asp-for="Direccion.IdDepartamento" class="form-control"></select>
+                </div>
+                <div>
+                    <label asp-for="Direccion.IdProvincia"></label>
+                    <select asp-for="Direccion.IdProvincia" class="form-control"></select>
+                </div>
+                <div>
+                    <label asp-for="Direccion.IdDistrito"></label>
+                    <select asp-for="Direccion.IdDistrito" class="form-control"></select>
+                </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 2fr 1fr;gap:12px;">
+                <div>
+                    <label asp-for="Direccion.TipoVia">Tipo de vía</label>
+                    <input asp-for="Direccion.TipoVia" class="form-control" placeholder="AV. / JR. / CALLE" />
+                </div>
+                <div>
+                    <label asp-for="Direccion.NombreVia">Nombre de vía</label>
+                    <input asp-for="Direccion.NombreVia" class="form-control" />
+                </div>
+                <div>
+                    <label asp-for="Direccion.Numero">Número</label>
+                    <input asp-for="Direccion.Numero" class="form-control" />
+                </div>
+            </div>
+
+            <label asp-for="Direccion.Urbanizacion"></label>
+            <input asp-for="Direccion.Urbanizacion" class="form-control" />
+
+            <label asp-for="Direccion.Referencia"></label>
+            <input asp-for="Direccion.Referencia" class="form-control" />
+
+            <div style="display:flex;gap:12px;margin-top:10px;">
+                <button type="submit" class="btn btn-primary">Registrar</button>
+                <a asp-action="Index" class="btn btn-ghost">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/ubigeo.js" asp-append-version="true"></script>
+    <script src="~/js/consultas.js" asp-append-version="true"></script>
+}

@@ -1,0 +1,92 @@
+@model IEnumerable<Materia>
+
+
+@{
+    ViewData["Title"] = "Materias";
+    var grupos = Model.GroupBy(m => m.NombreTipoMateria ?? "Sin tipo");
+}
+
+<div class="wrap page-head" style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px;">
+    <div>
+        <h1>Materias</h1>
+        <p>Materias conciliables, agrupadas por tipo.</p>
+    </div>
+    <div style="display:flex;gap:12px;">
+        <a asp-action="CreateTipo" class="btn btn-ghost">+ Tipo de materia</a>
+        <a asp-action="Create" class="btn btn-primary">+ Materia</a>
+    </div>
+</div>
+
+<div class="wrap">
+    @if (!Model.Any())
+    {
+        <div class="panel"><p style="text-align:center;color:#4a5a61;">Aún no hay materias registradas. Primero crea un tipo de materia (por ejemplo, "Civil y Comercial", "Familia") y luego agrega materias dentro de él.</p></div>
+    }
+    @foreach (var grupo in grupos)  
+    {
+        <div class="panel">
+            <h3 style="margin-bottom:16px;">@grupo.Key</h3>
+            <table class="tabla-sbss">
+                <thead><tr><th>Materia</th><th>Descripción</th><th></th><th></th></tr></thead>
+                <tbody>
+                    @foreach (var m in grupo)
+                    {
+                        <tr>
+                            <td><strong>@m.NombreMateria</strong></td>
+                            <td>@m.DescripcionMateria</td>
+
+                        
+                            <td>
+                                <button type="button" data-url="@Url.Action("Edit", new { id = m.IdMateria })" class="btn btn-ghost btn-modal" style="padding:6px 14px;">Editar</button>
+                            </td>
+                           
+                            <td>
+                                <button type="button" data-url="@Url.Action("Delete", new { id = m.IdMateria })" class="btn btn-ghost text-danger btn-modal" style="padding:6px 14px;">Eliminar</button>
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+<dialog id="miVentanaFlotante" style="border:none; border-radius:8px; padding:20px; box-shadow:0 4px 20px rgba(0,0,0,0.15); width:90%; max-width:500px;">
+    <div style="text-align: right; margin-bottom: 10px;">
+        <button type="button" onclick="document.getElementById('miVentanaFlotante').close()" style="background:none; border:none; font-size:20px; cursor:pointer; color:#888;">&times;</button>
+    </div>
+    <div id="cuerpoVentana">
+        <p style="text-align:center; color:#666;">Cargando formulario...</p>
+    </div>
+</dialog>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll('.btn-modal').forEach(button => {
+            button.addEventListener('click', function (e) {
+                
+                e.preventDefault(); 
+                
+                const url = this.getAttribute('data-url');
+                const ventana = document.getElementById('miVentanaFlotante');
+                const cuerpo = document.getElementById('cuerpoVentana');
+                
+                cuerpo.innerHTML = '<p style="text-align:center; color:#666;">Cargando...</p>';
+                ventana.showModal(); 
+
+                fetch(url)
+                    .then(response => response.text())
+                    .then(html => {
+                        cuerpo.innerHTML = html;
+                    })
+                    .catch(error => {
+                        cuerpo.innerHTML = '<p style="color:red; text-align:center;">No se pudo cargar el formulario.</p>';
+                    });
+            });
+        });
+    });
+</script>
+
+

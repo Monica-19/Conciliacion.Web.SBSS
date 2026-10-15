@@ -1,0 +1,48 @@
+@model List<ReporteExpedienteVm>
+@{
+    ViewData["Title"] = "Reporte por rango de fechas";
+    var filtro = ViewBag.Filtro as FiltroReporteRangoVm ?? new FiltroReporteRangoVm();
+}
+
+<div class="wrap page-head"><h1>Expedientes por rango de fechas</h1></div>
+
+<div class="wrap">
+    <form method="get" class="panel" style="display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap;">
+        <div>
+            <label style="font-family:'Poppins',sans-serif;font-size:0.82rem;font-weight:600;color:var(--navy);display:block;margin-bottom:6px;">Desde</label>
+            <input type="date" name="FechaInicio" class="form-control" style="margin-bottom:0;" value="@filtro.FechaInicio.ToString("yyyy-MM-dd")" />
+        </div>
+        <div>
+            <label style="font-family:'Poppins',sans-serif;font-size:0.82rem;font-weight:600;color:var(--navy);display:block;margin-bottom:6px;">Hasta</label>
+            <input type="date" name="FechaFin" class="form-control" style="margin-bottom:0;" value="@filtro.FechaFin.ToString("yyyy-MM-dd")" />
+        </div>
+        <button type="submit" class="btn btn-primary">Filtrar</button>
+        <a asp-action="PorRangoExcel" asp-route-FechaInicio="@filtro.FechaInicio.ToString("yyyy-MM-dd")" asp-route-FechaFin="@filtro.FechaFin.ToString("yyyy-MM-dd")" class="btn btn-ghost">Exportar Excel</a>
+        <a asp-action="PorRangoPdf" asp-route-FechaInicio="@filtro.FechaInicio.ToString("yyyy-MM-dd")" asp-route-FechaFin="@filtro.FechaFin.ToString("yyyy-MM-dd")" class="btn btn-ghost">Exportar PDF</a>
+    </form>
+
+    <div class="panel" style="padding:0;overflow-x:auto;">
+        <table class="tabla-sbss">
+            <thead><tr><th>N.° Expediente</th><th>Estado</th><th>Recepción</th><th>Notificación</th><th>Vencimiento</th><th>Cierre</th><th>Conciliador</th><th>Sede</th></tr></thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="8" style="text-align:center;color:#4a5a61;padding:28px;">No hay expedientes en ese rango de fechas.</td></tr>
+                }
+                @foreach (var e in Model)
+                {
+                    <tr>
+                        <td><strong>@e.NumeroExpediente</strong></td>
+                        <td><span class="badge-estado badge-@e.EstadoProceso">@e.EstadoProceso</span></td>
+                        <td>@e.FechaRecepcion?.ToString("dd/MM/yyyy")</td>
+                        <td>@(e.FechaNotificacion?.ToString("dd/MM/yyyy") ?? "-")</td>
+                        <td>@e.FechaVencimiento?.ToString("dd/MM/yyyy")</td>
+                        <td>@(e.FechaCierre?.ToString("dd/MM/yyyy") ?? "-")</td>
+                        <td>@(e.Conciliador ?? "Sin asignar")</td>
+                        <td>@(e.Sede ?? "-")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

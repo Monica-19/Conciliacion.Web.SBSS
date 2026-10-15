@@ -1,0 +1,28 @@
+@model CrearSedeVm
+@{
+    ViewData["Title"] = "Registrar sede";
+}
+
+<div class="wrap page-head"><h1>Registrar sede</h1></div>
+
+<div class="wrap">
+    <div class="panel" style="max-width:600px;">
+        <form asp-action="Create" method="post" class="form-sbss">
+            <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
+
+            <label asp-for="Nombre"></label>
+            <input asp-for="Nombre" class="form-control" />
+            <span asp-validation-for="Nombre" class="text-danger"></span>
+
+            <label asp-for="Descripcion"></label>
+            <textarea asp-for="Descripcion" class="form-control" rows="3"></textarea>
+
+            <div style="display:flex;gap:12px;">
+                <button type="submit" class="btn btn-primary">Registrar</button>
+                <a asp-action="Index" class="btn btn-ghost">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

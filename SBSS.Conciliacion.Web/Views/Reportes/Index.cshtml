@@ -1,0 +1,19 @@
+@{
+    ViewData["Title"] = "Reportes";
+}
+
+<div class="wrap page-head">
+    <h1>Reportes</h1>
+    <p>Exportables a Excel y PDF.</p>
+</div>
+
+<div class="wrap" style="display:grid;grid-template-columns:repeat(2,1fr);gap:20px;">
+    <a asp-action="PorRango" class="panel" style="display:block;">
+        <h3 style="margin-bottom:8px;">Por rango de fechas</h3>
+        <p style="color:#4a5a61;font-size:0.9rem;">Expedientes recibidos entre dos fechas, con sus fechas clave y conciliador asignado.</p>
+    </a>
+    <a asp-action="PorMateria" class="panel" style="display:block;">
+        <h3 style="margin-bottom:8px;">Por materia</h3>
+        <p style="color:#4a5a61;font-size:0.9rem;">Cantidad de expedientes por cada materia conciliable.</p>
+    </a>
+</div>

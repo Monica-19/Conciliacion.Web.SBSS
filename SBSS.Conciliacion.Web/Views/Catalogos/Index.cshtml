@@ -1,0 +1,27 @@
+@{
+    ViewData["Title"] = "Catálogos";
+}
+
+<div class="wrap page-head">
+    <h1>Catálogos</h1>
+    <p>Datos maestros que usa el resto del sistema.</p>
+</div>
+
+<div class="wrap" style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;">
+    <a asp-controller="Sedes" asp-action="Index" class="panel" style="text-align:center;display:block;">
+        <h3 style="margin-bottom:8px;">Sedes</h3>
+        <p style="color:#4a5a61;font-size:0.9rem;">Locales del centro.</p>
+    </a>
+    <a asp-controller="Trabajadores" asp-action="Index" class="panel" style="text-align:center;display:block;">
+        <h3 style="margin-bottom:8px;">Trabajadores</h3>
+        <p style="color:#4a5a61;font-size:0.9rem;">Conciliadores y personal.</p>
+    </a>
+    <a asp-controller="Materias" asp-action="Index" class="panel" style="text-align:center;display:block;">
+        <h3 style="margin-bottom:8px;">Materias</h3>
+        <p style="color:#4a5a61;font-size:0.9rem;">Materias conciliables.</p>
+    </a>
+    <a asp-controller="Personas" asp-action="Index" class="panel" style="text-align:center;display:block;">
+        <h3 style="margin-bottom:8px;">Personas</h3>
+        <p style="color:#4a5a61;font-size:0.9rem;">Naturales y jurídicas.</p>
+    </a>
+</div>

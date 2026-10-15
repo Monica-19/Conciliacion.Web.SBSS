@@ -1,0 +1,34 @@
+@model ReprogramarAudienciaVm
+@{
+    ViewData["Title"] = "Reprogramar audiencia";
+}
+
+<div class="wrap page-head"><h1>Reprogramar audiencia</h1></div>
+
+<div class="wrap">
+    <div class="panel" style="max-width:640px;">
+        <form asp-action="Reprogramar" method="post" class="form-sbss">
+            <input type="hidden" asp-for="IdDocumento" />
+            <input type="hidden" asp-for="IdExpediente" />
+            <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
+
+            <label asp-for="NuevaFecha"></label>
+            <input asp-for="NuevaFecha" type="date" class="form-control" />
+            <span asp-validation-for="NuevaFecha" class="text-danger"></span>
+
+            <label asp-for="NuevaHora"></label>
+            <input asp-for="NuevaHora" type="time" class="form-control" />
+            <span asp-validation-for="NuevaHora" class="text-danger"></span>
+
+            <label asp-for="Motivo"></label>
+            <textarea asp-for="Motivo" class="form-control" rows="3"></textarea>
+            <span asp-validation-for="Motivo" class="text-danger"></span>
+
+            <button type="submit" class="btn btn-primary">Guardar</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

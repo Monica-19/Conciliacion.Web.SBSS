@@ -1,0 +1,43 @@
+@model CrearMateriaVm
+@{
+    ViewData["Title"] = "Nueva materia";
+    var tipos = ViewBag.Tipos as List<TipoMateria> ?? new();
+}
+
+<div class="wrap page-head"><h1>Nueva materia</h1></div>
+
+<div class="wrap">
+    <div class="panel" style="max-width:600px;">
+        @if (!tipos.Any())
+        {
+            <p style="color:#4a5a61;margin-bottom:16px;">Primero registra un <a asp-action="CreateTipo" style="color:var(--navy);text-decoration:underline;">tipo de materia</a>.</p>
+        }
+        <form asp-action="Create" method="post" class="form-sbss">
+            <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
+
+            <label asp-for="IdTipoMateria"></label>
+            <select asp-for="IdTipoMateria" class="form-control">
+                <option value="">-- Selecciona --</option>
+                @foreach (var t in tipos)
+                {
+                    <option value="@t.IdTipoMateria">@t.NombreTipoMateria</option>
+                }
+            </select>
+            <span asp-validation-for="IdTipoMateria" class="text-danger"></span>
+
+            <label asp-for="NombreMateria"></label>
+            <input asp-for="NombreMateria" class="form-control" placeholder="Ej. Pensión de alimentos" />
+            <span asp-validation-for="NombreMateria" class="text-danger"></span>
+
+            <label asp-for="DescripcionMateria"></label>
+            <textarea asp-for="DescripcionMateria" class="form-control" rows="3"></textarea>
+
+            <div style="display:flex;gap:12px;">
+                <button type="submit" class="btn btn-primary">Registrar materia</button>
+                <a asp-action="Index" class="btn btn-ghost">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

@@ -1,0 +1,22 @@
+@{
+    ViewData["Title"] = "Enlace generado";
+    Layout = "_Layout";
+    var enlace = ViewBag.Enlace as string;
+    var usuario = ViewBag.Usuario as string;
+}
+
+<section style="min-height:70vh;display:flex;align-items:center;justify-content:center;background:var(--mist);padding:60px 0;">
+    <div class="panel" style="max-width:520px;width:100%;">
+        <h1 style="font-size:1.3rem;margin-bottom:12px;">Enlace de restablecimiento generado</h1>
+        <p style="color:#4a5a61;margin-bottom:20px;">
+            Para el usuario <strong>@usuario</strong>. Este sistema no tiene correo configurado,
+            así que comparte este enlace de forma segura con la persona (vence en 30 minutos):
+        </p>
+
+        <div class="panel" style="background:var(--mist);word-break:break-all;font-family:monospace;font-size:0.85rem;margin-bottom:20px;">
+            @enlace
+        </div>
+
+        <a asp-action="Login" class="btn btn-primary" style="width:100%;">Volver a iniciar sesión</a>
+    </div>
+</section>

@@ -1,0 +1,49 @@
+@model IEnumerable<PersonaListItem>
+@{
+    ViewData["Title"] = "Personas";
+    var busqueda = ViewBag.Busqueda as string;
+}
+
+<div class="wrap page-head" style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px;">
+    <div>
+        <h1>Personas</h1>
+        <p>Personas naturales y jurídicas registradas (solicitantes, invitados, apoderados...).</p>
+    </div>
+    <div style="display:flex;gap:12px;">
+        <a asp-action="CreateNatural" class="btn btn-ghost">+ Persona natural</a>
+        <a asp-action="CreateJuridica" class="btn btn-primary">+ Persona jurídica</a>
+    </div>
+</div>
+
+<div class="wrap">
+    <form method="get" class="panel" style="display:flex;gap:16px;align-items:flex-end;">
+        <div style="flex:1;">
+            <label style="font-family:'Poppins',sans-serif;font-size:0.82rem;font-weight:600;color:var(--navy);display:block;margin-bottom:6px;">Buscar por nombre, razón social o documento</label>
+            <input type="text" name="busqueda" class="form-control" style="margin-bottom:0;" value="@busqueda" />
+        </div>
+        <button type="submit" class="btn btn-primary">Buscar</button>
+    </form>
+
+    <div class="panel" style="padding:0;overflow-x:auto;">
+        <table class="tabla-sbss">
+            <thead><tr><th>Nombre / Razón social</th><th>Tipo</th><th>Documento</th><th>Contacto</th><th>Estado</th><th></th></tr></thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="6" style="text-align:center;color:#4a5a61;padding:28px;">No se encontraron personas.</td></tr>
+                }
+                @foreach (var p in Model)
+                {
+                    <tr>
+                        <td><strong>@p.NombreCompleto</strong></td>
+                        <td>@(p.TipoPersona == "NATURAL" ? "Natural" : "Jurídica")</td>
+                        <td>@p.Documento</td>
+                        <td>@(p.CorreoP ?? p.CelularP ?? "-")</td>
+                        <td><span class="badge-estado badge-@(p.EstadoPersona == "ACTIVO" ? "CONCLUIDO" : "ARCHIVADO")">@p.EstadoPersona</span></td>
+                        <td><a asp-action="Details" asp-route-id="@p.IdPersona" class="btn btn-ghost" style="padding:6px 16px;">Ver</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

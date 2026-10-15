@@ -1,0 +1,28 @@
+@model RestablecerContraseniaVm
+@{
+    ViewData["Title"] = "Restablecer contraseña";
+    Layout = "_Layout";
+}
+
+<section style="min-height:70vh;display:flex;align-items:center;justify-content:center;background:var(--mist);padding:60px 0;">
+    <div class="panel" style="max-width:440px;width:100%;">
+        <h1 style="font-size:1.3rem;margin-bottom:20px;text-align:center;">Elige tu nueva contraseña</h1>
+
+        <form asp-action="RestablecerContrasenia" method="post" class="form-sbss">
+            <input type="hidden" asp-for="Token" />
+            <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
+
+            <label asp-for="NuevaContrasenia"></label>
+            <input asp-for="NuevaContrasenia" class="form-control" autofocus />
+            <span asp-validation-for="NuevaContrasenia" class="text-danger"></span>
+
+            <label asp-for="ConfirmarContrasenia"></label>
+            <input asp-for="ConfirmarContrasenia" class="form-control" />
+            <span asp-validation-for="ConfirmarContrasenia" class="text-danger"></span>
+
+            <button type="submit" class="btn btn-primary" style="width:100%;margin-top:6px;">Guardar nueva contraseña</button>
+        </form>
+    </div>
+</section>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

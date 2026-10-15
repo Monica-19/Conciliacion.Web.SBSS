@@ -1,0 +1,62 @@
+@model ProgramarAudienciaVm
+@{
+    ViewData["Title"] = "Programar audiencia";
+    var conciliadores = ViewBag.Conciliadores as List<Trabajador> ?? new();
+    var tiposDocumento = ViewBag.TiposDocumento as List<TipoDocumento> ?? new();
+}
+
+<div class="wrap page-head">
+    <h1>Programar audiencia</h1>
+    <p>Expediente <strong>@Model.NumeroExpediente</strong></p>
+</div>
+
+<div class="wrap">
+    <div class="panel" style="max-width:640px;">
+        <form asp-action="Programar" method="post" class="form-sbss">
+            <input type="hidden" asp-for="IdExpediente" />
+            <input type="hidden" asp-for="NumeroExpediente" />
+            <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
+
+            <label asp-for="IdTipoDocumentos"></label>
+            <select asp-for="IdTipoDocumentos" class="form-control">
+                <option value="">-- Selecciona --</option>
+                @foreach (var td in tiposDocumento)
+                {
+                    <option value="@td.IdTipoDocumentos">@td.Nombre</option>
+                }
+            </select>
+            <span asp-validation-for="IdTipoDocumentos" class="text-danger"></span>
+
+            <label asp-for="IdConciliador"></label>
+            <select asp-for="IdConciliador" class="form-control">
+                <option value="">-- Selecciona --</option>
+                @foreach (var c in conciliadores)
+                {
+                    <option value="@c.IdTrabajador">@c.NombreCompleto</option>
+                }
+            </select>
+            <span asp-validation-for="IdConciliador" class="text-danger"></span>
+
+            <label asp-for="Fecha"></label>
+            <input asp-for="Fecha" type="date" class="form-control" />
+            <span asp-validation-for="Fecha" class="text-danger"></span>
+
+            <label asp-for="Hora"></label>
+            <input asp-for="Hora" type="time" class="form-control" />
+            <span asp-validation-for="Hora" class="text-danger"></span>
+
+            <label asp-for="NumeroSesion"></label>
+            <input asp-for="NumeroSesion" type="number" class="form-control" />
+            <span asp-validation-for="NumeroSesion" class="text-danger"></span>
+
+            <div style="display:flex;gap:12px;margin-top:10px;">
+                <button type="submit" class="btn btn-primary">Programar audiencia</button>
+                <a asp-controller="Expedientes" asp-action="Details" asp-route-id="@Model.IdExpediente" class="btn btn-ghost">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

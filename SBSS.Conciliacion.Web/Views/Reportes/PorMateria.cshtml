@@ -1,0 +1,46 @@
+@model List<ReporteMateriaVm>
+@{
+    ViewData["Title"] = "Reporte por materia";
+    var tipos = ViewBag.Tipos as List<TipoMateria> ?? new();
+    var idTipoMateria = ViewBag.IdTipoMateria as int?;
+}
+
+<div class="wrap page-head"><h1>Expedientes por materia</h1></div>
+
+<div class="wrap">
+    <form method="get" class="panel" style="display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap;">
+        <div style="min-width:240px;">
+            <label style="font-family:'Poppins',sans-serif;font-size:0.82rem;font-weight:600;color:var(--navy);display:block;margin-bottom:6px;">Tipo de materia</label>
+            <select name="idTipoMateria" class="form-control" style="margin-bottom:0;">
+                <option value="">Todos</option>
+                @foreach (var t in tipos)
+                {
+                    <option value="@t.IdTipoMateria" selected="@(t.IdTipoMateria == idTipoMateria)">@t.NombreTipoMateria</option>
+                }
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Filtrar</button>
+        <a asp-action="PorMateriaExcel" asp-route-idTipoMateria="@idTipoMateria" class="btn btn-ghost">Exportar Excel</a>
+        <a asp-action="PorMateriaPdf" asp-route-idTipoMateria="@idTipoMateria" class="btn btn-ghost">Exportar PDF</a>
+    </form>
+
+    <div class="panel" style="padding:0;overflow-x:auto;">
+        <table class="tabla-sbss">
+            <thead><tr><th>Tipo de materia</th><th>Materia</th><th>Cantidad de expedientes</th></tr></thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="3" style="text-align:center;color:#4a5a61;padding:28px;">No hay datos para mostrar.</td></tr>
+                }
+                @foreach (var m in Model)
+                {
+                    <tr>
+                        <td>@m.NombreTipoMateria</td>
+                        <td><strong>@m.NombreMateria</strong></td>
+                        <td>@m.Cantidad</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

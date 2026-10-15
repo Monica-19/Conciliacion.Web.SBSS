@@ -1,0 +1,57 @@
+@model List<Notificacion>
+@{
+    ViewData["Title"] = "Notificaciones";
+    var noLeidas = Model.Count(n => !n.Leida);
+}
+
+<div class="wrap page-head" style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px;">
+    <div>
+        <h1>Notificaciones</h1>
+        <p>@(noLeidas > 0 ? $"Tienes {noLeidas} notificación(es) sin leer." : "No tienes notificaciones pendientes.")</p>
+    </div>
+    @if (noLeidas > 0)
+    {
+        <form asp-action="MarcarTodasLeidas" method="post">
+            <button type="submit" class="btn btn-ghost">Marcar todas como leídas</button>
+        </form>
+    }
+</div>
+
+<div class="wrap">
+    <div class="panel" style="padding:0;">
+        @if (!Model.Any())
+        {
+            <p style="text-align:center;color:#4a5a61;padding:40px;">Aún no tienes notificaciones. Aquí aparecerán las alertas de vencimiento de expedientes, asignaciones y audiencias programadas.</p>
+        }
+        <ul style="list-style:none;margin:0;padding:0;">
+            @foreach (var n in Model)
+            {
+                <li style="display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 28px;border-bottom:1px solid rgba(12,56,85,0.08);@(n.Leida ? "" : "background:#f4f8fb;")">
+                    <div style="display:flex;gap:14px;align-items:flex-start;">
+                        <span class="badge-estado @(n.Leida ? "badge-ARCHIVADO" : "badge-vencido")" style="margin-top:2px;">
+                            @(n.TipoNotificacion)
+                        </span>
+                        <div>
+                            <p style="font-family:'Poppins',sans-serif;font-size:0.92rem;color:var(--ink);">@n.Mensaje</p>
+                            <p style="font-size:0.8rem;color:#4a5a61;margin-top:4px;">
+                                @n.FechaCreacion.ToString("dd/MM/yyyy HH:mm")
+                                @if (n.IdExpediente.HasValue)
+                                {
+                                    <span> · </span>
+                                    <a asp-controller="Expedientes" asp-action="Details" asp-route-id="@n.IdExpediente" style="color:var(--navy);text-decoration:underline;">Ver expediente</a>
+                                }
+                            </p>
+                        </div>
+                    </div>
+                    @if (!n.Leida)
+                    {
+                        <form asp-action="MarcarLeida" method="post">
+                            <input type="hidden" name="id" value="@n.IdNotificacion" />
+                            <button type="submit" class="btn btn-ghost" style="padding:6px 16px;white-space:nowrap;">Marcar leída</button>
+                        </form>
+                    }
+                </li>
+            }
+        </ul>
+    </div>
+</div>
